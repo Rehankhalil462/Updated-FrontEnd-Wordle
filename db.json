@@ -1,0 +1,12 @@
+{
+  "words": [
+    {
+      "id": 1,
+      "word": "rehan"
+    },
+    { "id": 2, "word": "abcde" },
+    { "id": 3, "word": "write" },
+    { "id": 4, "word": "abcde" },
+    { "id": 5, "word": "abcde" }
+  ]
+}
