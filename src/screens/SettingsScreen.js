@@ -52,7 +52,6 @@ export const SettingsScreen = ({ navigation }) => {
     })();
     return sound
       ? () => {
-          console.log("Unloading Sound");
           sound.unloadAsync();
         }
       : undefined;
@@ -79,10 +78,10 @@ export const SettingsScreen = ({ navigation }) => {
             setLoading(false);
           }, 1000);
         }}
-        style={{ width: width, height: height, position: "absolute" }}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
       />
       {loading ? (
-        <ActivityIndicator color="#7f00ff" size="large" />
+        <ActivityIndicator size="large" />
       ) : (
         <>
           <Text

@@ -12,7 +12,6 @@ import { Video, Audio } from "expo-av";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SplashScreen = ({ navigation }) => {
-  const { height, width } = Dimensions.get("window");
   const { colors } = useTheme();
 
   const [sound, setSound] = React.useState();
@@ -70,7 +69,7 @@ export const SplashScreen = ({ navigation }) => {
         resizeMode="cover"
         shouldPlay
         isLooping
-        style={{ width: width, height: height, position: "absolute" }}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
       />
 
       <Image

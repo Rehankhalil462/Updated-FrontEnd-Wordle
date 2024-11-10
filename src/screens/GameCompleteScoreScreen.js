@@ -13,7 +13,6 @@ import ConfettiCannon from "react-native-confetti-cannon";
 export const GameCompleteScoreScreen = ({ navigation, route }) => {
   const { height, width } = Dimensions.get("window");
   const { colors } = useTheme();
-  console.log(route);
   return (
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <Video
@@ -24,7 +23,7 @@ export const GameCompleteScoreScreen = ({ navigation, route }) => {
         resizeMode="cover"
         shouldPlay
         isLooping
-        style={{ width: width, height: height, position: "absolute" }}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
       />
 
       <Text
@@ -32,9 +31,10 @@ export const GameCompleteScoreScreen = ({ navigation, route }) => {
           fontSize: 30,
           color: colors.headerLeftIcons,
           marginBottom: 20,
+          textAlign: "center",
         }}
       >
-        {route?.params?.result ? "You Won ." : "You Lose."}
+        {route?.params?.result ? "Congratulations !" : "Better luck next time."}
       </Text>
 
       <Text
@@ -67,7 +67,7 @@ export const GameCompleteScoreScreen = ({ navigation, route }) => {
           onPress={() => navigation.navigate("SPLASH")}
         /> */}
 
-        <Button
+        {/* <Button
           icon="refresh"
           color="#fff"
           mode="contained"
@@ -81,7 +81,7 @@ export const GameCompleteScoreScreen = ({ navigation, route }) => {
             fontWeight: "bold",
           }}
           onPress={() =>
-            navigation.navigate("INFO", { previousScreen: "SPLASH" })
+            navigation.navigate("HOME", { previousScreen: "SPLASH" })
           }
           style={{
             opacity: 0.9,
@@ -107,7 +107,7 @@ export const GameCompleteScoreScreen = ({ navigation, route }) => {
           >
             Restart The Game
           </Text>
-        </Button>
+        </Button> */}
         <Button
           icon="keyboard-backspace"
           color="#fff"

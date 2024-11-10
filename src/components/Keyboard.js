@@ -14,13 +14,11 @@ export const Keyboard = ({ onKeyPress }) => {
       require("../../assets/ButtonPress.mp3")
     );
     setSound(sound);
-    console.log("playing sound");
     await sound.playAsync();
   };
   React.useEffect(() => {
     return sound
       ? () => {
-          console.log("unloading sound");
           sound.unloadAsync();
         }
       : undefined;

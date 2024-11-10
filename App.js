@@ -1,23 +1,32 @@
 import "react-native-gesture-handler";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Provider as PaperProvider } from "react-native-paper";
 import { lightTheme, darkTheme } from "./style/theme";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createDrawerNavigator } from "@react-navigation/drawer";
 
-const Drawer = createDrawerNavigator();
 import { InfoScreen } from "./src/screens/InfoScreen";
-// import { SettingsScreen } from "./src/screens/SettingsScreen";
-import { ScoreScreen } from "./src/screens/ScoreScreen";
 import { GameCompleteScoreScreen } from "./src/screens/GameCompleteScoreScreen";
 import { SplashScreen } from "./src/screens/SplashScreen";
 import { GameScreen } from "./src/screens/GameScreen";
 import { StatusBar } from "expo-status-bar";
+import { SettingsScreen } from "./src/screens/SettingsScreen";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 export default function App() {
   const [lightThemeMode, setLightThemeMode] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      const response = await axios.get(
+        "https://wordle-vycv.onrender.com/words/"
+      );
+      const words = response.data;
+      await AsyncStorage.setItem("words", JSON.stringify(words));
+    })();
+  }, []);
 
   return (
     <NavigationContainer>
@@ -36,7 +45,6 @@ export default function App() {
             </Stack.Screen>
             {/* <Stack.Screen name="SETTINGS" component={SettingsScreen} /> */}
             <Stack.Screen name="INFO" component={InfoScreen} />
-            <Stack.Screen name="SCORE" component={ScoreScreen} />
           </Stack.Group>
           <Stack.Group
             screenOptions={{

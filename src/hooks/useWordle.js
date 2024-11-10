@@ -17,4 +17,3 @@ export const useWordle = () => {
 const array = ["abcd", "efgh"];
 
 array[2] = "abcd";
-console.log(array);

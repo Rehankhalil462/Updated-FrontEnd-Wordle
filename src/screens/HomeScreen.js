@@ -52,7 +52,6 @@ export const HomeScreen = ({
     const indexNumber = Math.floor(Math.random() * count);
     const word = Db.words[indexNumber].word;
 
-    console.log(word);
     if (!gameComplete) {
       setActiveWord(words[Math.floor(Math.random() * words.length)]);
       setGuesses(["", "", "", "", "", ""]);

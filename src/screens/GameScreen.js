@@ -14,18 +14,13 @@ import { StatusBar as Wxar } from "expo-status-bar";
 import { Video } from "expo-av";
 import SplashBackgroundVideo from "../Bubbles.mp4";
 
-import { useTheme } from "react-native-paper";
-import Db from "../../db.json";
+import { ActivityIndicator, useTheme } from "react-native-paper";
 import { Wordle } from "../components/Wordle";
 
 import { Header } from "../components/Header";
 import { Keyboard } from "../components/Keyboard";
 
-// import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { GameCompleteScoreScreen } from "../screens/GameCompleteScoreScreen";
-// import { View, Text } from "react-native";
-const Stack = createNativeStackNavigator();
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const GameScreen = ({
   lightThemeMode,
@@ -44,6 +39,15 @@ export const GameScreen = ({
     "WHACK",
     "SUGAR",
   ];
+
+  const [loading, setLoading] = useState(true);
+
+  const { colors } = useTheme();
+
+  const [guessIndex, setGuessIndex] = useState(0);
+  const [activeWord, setActiveWord] = useState(words[0]);
+
+  const [guesses, setGuesses] = useState(["", "", "", "", "", ""]);
 
   const closeAppAction = () => {
     Alert.alert(
@@ -72,30 +76,33 @@ export const GameScreen = ({
       BackHandler.removeEventListener("hardwareBackPress", closeAppAction);
   }, []);
 
-  const { colors } = useTheme();
-  const { height, width } = Dimensions.get("window");
-
-  const [solution, setSolution] = useState(null);
-  const [guess, setGuess] = useState("");
-  const [guessIndex, setGuessIndex] = useState(0);
-  const [activeWord, setActiveWord] = useState(words[0]);
-
-  const [guesses, setGuesses] = useState(["", "", "", "", "", ""]);
-  const [gameComplete, setGameComplete] = useState(false);
   useEffect(() => {
-    const count = Object.keys(Db.words).length;
-    const indexNumber = Math.floor(Math.random() * count);
-    const word = Db.words[indexNumber].word;
+    setLoading(true);
+    (async () => {
+      const response = await AsyncStorage.getItem("words");
 
-    console.log(word);
-    if (!gameComplete) {
-      setActiveWord(words[Math.floor(Math.random() * words.length)]);
-      setGuesses(["", "", "", "", "", ""]);
-      setGuessIndex(0);
+      if (response) {
+        const wordsData = JSON.parse(response);
+        handleSetWordAndSolution(wordsData, true);
+      } else {
+        handleSetWordAndSolution(words);
+      }
+    })();
+  }, []);
+
+  const handleSetWordAndSolution = (data, isApiData = false) => {
+    if (isApiData) {
+      const selectedWord =
+        data[Math.floor(Math.random() * data.length)]?.word.toUpperCase();
+      console.log("selectedWord", selectedWord);
+      setActiveWord(selectedWord);
+    } else {
+      setActiveWord(data[Math.floor(Math.random() * data.length)]);
     }
-    setSolution(word);
-    console.log(activeWord);
-  }, [setSolution, setGameComplete]);
+    setGuesses(["", "", "", "", "", ""]);
+    setGuessIndex(0);
+    setLoading(false);
+  };
 
   const handleKeyPress = (letter) => {
     const guess = guesses[guessIndex];
@@ -117,7 +124,6 @@ export const GameScreen = ({
 
       if (activeWord === guess) {
         setGuessIndex(guessIndex + 1);
-        setGameComplete(true);
         // alert("you won @");
         navigation.navigate("SCORE_SCREEN", {
           result: true,
@@ -128,7 +134,6 @@ export const GameScreen = ({
       if (guessIndex < 5) {
         setGuessIndex(guessIndex + 1);
       } else {
-        setGameComplete(true);
         navigation.navigate("SCORE_SCREEN", {
           result: false,
           solution: activeWord,
@@ -162,24 +167,29 @@ export const GameScreen = ({
         resizeMode="cover"
         shouldPlay
         isLooping
-        style={{ width: width, height: height, position: "absolute" }}
+        style={{ width: "100%", height: "100%", position: "absolute" }}
       />
-      <Header closeAppAction={closeAppAction} navigation={navigation} />
-      {solution && (
-        <View style={[styles.bubblesContainer, { width: "100%" }]}>
-          <Wordle
-            activeWord={activeWord}
-            guessIndex={guessIndex}
-            solution={solution}
-            guesses={guesses}
-          />
-        </View>
+      {loading ? (
+        <ActivityIndicator size="large" />
+      ) : (
+        <>
+          <Header closeAppAction={closeAppAction} navigation={navigation} />
+          {activeWord && (
+            <View style={[styles.bubblesContainer, { width: "100%" }]}>
+              <Wordle
+                activeWord={activeWord}
+                guessIndex={guessIndex}
+                guesses={guesses}
+              />
+            </View>
+          )}
+          {/* {gameComplete && navigation.navigate("SCORE_SCREEN")} */}
+          <View style={[styles.keypadContainer, { width: "100%" }]}>
+            <Keyboard onKeyPress={handleKeyPress} />
+          </View>
+          <Wxar style={lightThemeMode ? "light" : "dark"} />
+        </>
       )}
-      {/* {gameComplete && navigation.navigate("SCORE_SCREEN")} */}
-      <View style={[styles.keypadContainer, { width: "100%" }]}>
-        <Keyboard onKeyPress={handleKeyPress} />
-      </View>
-      <Wxar style={lightThemeMode ? "light" : "dark"} />
     </SafeAreaView>
   );
 };
