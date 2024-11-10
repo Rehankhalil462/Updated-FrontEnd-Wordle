@@ -9,28 +9,9 @@ import {
 import { useTheme, Button } from "react-native-paper";
 import SplashBackgroundVideo from "../../src/Bubbles.mp4";
 import { Video, Audio } from "expo-av";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const SplashScreen = ({ navigation }) => {
   const { colors } = useTheme();
-
-  const [sound, setSound] = React.useState();
-
-  async function playSound() {
-    const { sound } = await Audio.Sound.createAsync(
-      require("../../assets/EventDeparture.mp3")
-    );
-    setSound(sound);
-    await sound.replayAsync({ isLooping: true, volume: 0.2 });
-  }
-
-  React.useEffect(() => {
-    return sound
-      ? () => {
-          sound.unloadAsync();
-        }
-      : undefined;
-  }, [sound]);
 
   const closeAppAction = () => {
     Alert.alert("Hold on !", "Are you sure you want to close this game?", [
@@ -49,7 +30,6 @@ export const SplashScreen = ({ navigation }) => {
 
   useEffect(() => {
     BackHandler.addEventListener("hardwareBackPress", closeAppAction);
-    playSound();
     return () =>
       BackHandler.removeEventListener("hardwareBackPress", closeAppAction);
   }, []);

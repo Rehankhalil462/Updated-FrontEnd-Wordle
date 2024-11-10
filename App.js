@@ -10,7 +10,6 @@ import { GameCompleteScoreScreen } from "./src/screens/GameCompleteScoreScreen";
 import { SplashScreen } from "./src/screens/SplashScreen";
 import { GameScreen } from "./src/screens/GameScreen";
 import { StatusBar } from "expo-status-bar";
-import { SettingsScreen } from "./src/screens/SettingsScreen";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -43,7 +42,6 @@ export default function App() {
                 />
               )}
             </Stack.Screen>
-            {/* <Stack.Screen name="SETTINGS" component={SettingsScreen} /> */}
             <Stack.Screen name="INFO" component={InfoScreen} />
           </Stack.Group>
           <Stack.Group
